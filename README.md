@@ -7,12 +7,12 @@
 
 <!-- badges: end -->
 
-The goal of tipitaka is to allow students and reserachers to apply the
+The goal of tipitaka is to allow students and researchers to apply the
 tools of computational linguistics to the ancient Buddhist texts known
 as the Tipitaka or Pali Canon.
 
 The Tipitaka is the canonical scripture of Theravadin Buddhists
-worldside. It purports to record the direct teachings of the historical
+worldwide. It purports to record the direct teachings of the historical
 Buddha. It was first recorded in written form in what is now Sri Lanka,
 likely around 100 BCE.
 
@@ -35,7 +35,7 @@ have made a few edits to the CST4 files in creating this package:
     corrected.
 
 There is no universal script for Pali; traditionally each Buddhist
-country ususes its own script to write Pali phoneticaly. This package
+country ususes its own script to write Pali phonetically. This package
 uses the Roman script and the diacritical system developed by the PTS.
 However, note that the Pali alphabet does NOT follow the alphabetical
 ordering of English or other Roman-script languages. For this reason,
@@ -64,17 +64,61 @@ devtools::install_github("dangerzig/tipitaka")
 You can use tipitaka to do clustering analysis of the various books of
 the Pali Canon. For example:
 
+``` r
+library(tipitaka)
+dist_m <- dist(tipitaka_wide)
+cluster <- hclust(dist_m)
+plot(cluster)
+```
+
 <img src="man/figures/README-dendogram-1.png" width="100%" />
 
 You can also create traditional k-means clusters and visualize these
 using packages like `factoextra`:
+
+``` r
+library(factoextra) # great visualizer for clusters
+km <- kmeans(dist_m, 2, nstart = 25, algorithm = "Lloyd")
+fviz_cluster(km, dist_m, labelsize = 12, repel = TRUE)
+```
 
 <img src="man/figures/README-kmeans-1.png" width="100%" />
 
 You can also explore the topics of various parts of the Tipitaka using
 packges like `wordcloud`:
 
+``` r
+library(wordcloud)
+library(dplyr)
+sati_sutta_long %>%
+  anti_join(pali_stop_words, by = "word") %>%
+  with(wordcloud(word, n, max.words = 40)) 
+```
+
 <img src="man/figures/README-wordclouds-1.png" width="100%" />
 
 Finally, we can look at word frequency by rank:
+
+``` r
+library(dplyr, quietly = TRUE)
+freq_by_rank <- tipitaka_long %>%
+  group_by(word) %>%
+  add_count(wt = n, name = "word_total") %>%
+  ungroup() %>%
+  distinct(word, .keep_all = TRUE) %>%
+  mutate(tipitaka_total =  
+           sum(distinct(tipitaka_long, book, 
+                        .keep_all = TRUE)$total)) %>%
+    transform(freq = word_total/tipitaka_total) %>%
+  arrange(desc(freq)) %>%
+  mutate(rank = row_number()) %>%
+  select(-n, -total, -book)
+
+freq_by_rank %>%
+  ggplot(aes(rank, freq)) +
+  geom_line(size = 1.1, alpha = 0.8, show.legend = FALSE) +
+  scale_x_log10() +
+  scale_y_log10()
+```
+
 <img src="man/figures/README-freq-by-word-1.png" width="100%" />

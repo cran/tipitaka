@@ -20,20 +20,17 @@ the Sutta Pitaka. These are easier to read if you call
 \code{stringi::stri_unescape_unicode} first.
 }
 \examples{
-# Clean up the Unicode characters to make things more readble:
+\donttest{
+# Clean up the Unicode characters to make things more readable:
 sutta_pitaka$name <-
   stringi::stri_unescape_unicode(sutta_pitaka$name)
+}
+\donttest{
 # Count all the words in the Suttas:
 sum(
   unique(
     tipitaka_long[tipitaka_long$book \%in\% sutta_pitaka$book, "total"]))
-
-# Count another way:
-sum(tipitaka_long[tipitaka_long$book \%in\% sutta_pitaka$book, "n"])
-
-# Create a tibble of just the Suttas
-sutta_wide <-
-  tipitaka_wide[row.names(tipitaka_wide) \%in\% sutta_pitaka$book,]
+}
 
 }
 \keyword{datasets}

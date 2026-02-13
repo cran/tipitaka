@@ -8,7 +8,7 @@
 An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 245 rows and 1 columns.
 }
 \source{
-\url{https://dsalsrv04.uchicago.edu/dictionaries/pali/}
+\url{https://dsal.uchicago.edu/dictionaries/pali/}
 }
 \usage{
 pali_stop_words
@@ -18,11 +18,11 @@ A list of all declinables and particles from the PTS
 Pali-English Dictionary.
 }
 \examples{
-# Find most common words in the Mahāsatipatthāna Sutta excluding stop words
-library(dplyr)
-sati_sutta_long \%>\%
-  anti_join(pali_stop_words, by = "word") \%>\%
-  arrange(desc(freq))
+\donttest{
+# Show top content words in the Tipitaka (excluding stop words)
+content_words <- tipitaka_long[!tipitaka_long$word \%in\% pali_stop_words$word, ]
+head(content_words[order(-content_words$n), ], 10)
+}
 
 }
 \keyword{datasets}

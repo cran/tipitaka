@@ -2,9 +2,6 @@
 #
 # Here are some helper functions for working with Pali.
 
-library(stringr)
-library(stringi)
-
 # CRAN packages can't have Unicode characters, so the strings
 # below are escaped using stringi::stri_escape_unicode(). Here
 # are the originals for reference:
@@ -123,13 +120,10 @@ pali_gt <- function(word1, word2) {
 #' @export
 #'
 #' @examples
-#' # Every unique word of of the Mahāsatipatthāna Sutta in
-#' # Pali alphabetical order:
-#' pali_sort(sati_sutta_long$word)
-#'
-#' # A sorted list of 100 random words from the Tiptaka:
-#' library(dplyr)
+#' \donttest{
+#' # A sorted list of 100 random words from the Tipitaka:
 #' pali_sort(sample(tipitaka_long$word, 100))
+#' }
 pali_sort <- function(word_list) {
   c_pali_sort(word_list)
 }

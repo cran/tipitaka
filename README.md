@@ -16,31 +16,35 @@ worldwide. It purports to record the direct teachings of the historical
 Buddha. It was first recorded in written form in what is now Sri Lanka,
 likely around 100 BCE.
 
-The tipitaka package primarily consists of the texts of the Tipitaka in
-various electronic forms, plus a few simple functions and data
-structures for working with the Pali language.
+The tipitaka package provides the texts of the Tipitaka in various
+electronic forms, plus functions for working with the Pali language.
 
-The version of the Tipitaka included here is based on what’s known as
-the Chattha Sangāyana Tipiṭaka version 4.0 (aka, CST4) published by the
-Vipassana Research Institute and received from them in April 2020. I
-have made a few edits to the CST4 files in creating this package:
+## Related Packages
 
-  - Where volumes were split across multiple files, they are here are
-    combined as a single volume
+For a **lemmatized critical edition** of the Tipitaka with sutta-level
+granularity, see
+[tipitaka.critical](https://github.com/dangerzig/tipitaka.critical).
 
-  - Where volume numbering was inconsistent with the widely-used Pali
-    Text Society (PTS) scheme, I have tried to conform with PTS.
+## Data Sources
 
-  - A very few typos that were found while processing have been
-    corrected.
+This package includes the complete Tipitaka from the Chattha Sangayana
+Tipitaka version 4.0 (CST4) published by the Vipassana Research
+Institute. It covers all three pitakas (Vinaya, Sutta, and Abhidhamma).
+
+- `tipitaka_raw` — Full text per volume (shipped as data)
+- `tipitaka_long` — Word frequencies per volume (computed on first
+  access)
+- `tipitaka_wide` — Word frequency matrix (computed on first access)
+
+## Pali Alphabet
 
 There is no universal script for Pali; traditionally each Buddhist
-country ususes its own script to write Pali phonetically. This package
+country uses its own script to write Pali phonetically. This package
 uses the Roman script and the diacritical system developed by the PTS.
 However, note that the Pali alphabet does NOT follow the alphabetical
 ordering of English or other Roman-script languages. For this reason,
 tipitaka includes `pali_alphabet` giving the full Pali alphabet in
-order, and the functions, `pali_lt`, `pali_gt`, `pali_eq`, and
+order, and the functions `pali_lt`, `pali_gt`, `pali_eq`, and
 `pali_sort` for comparing and sorting Pali strings.
 
 ## Installation
@@ -71,7 +75,7 @@ cluster <- hclust(dist_m)
 plot(cluster)
 ```
 
-<img src="man/figures/README-dendogram-1.png" width="100%" />
+<img src="man/figures/README-dendogram-1.png" alt="" width="100%" />
 
 You can also create traditional k-means clusters and visualize these
 using packages like `factoextra`:
@@ -82,20 +86,7 @@ km <- kmeans(dist_m, 2, nstart = 25, algorithm = "Lloyd")
 fviz_cluster(km, dist_m, labelsize = 12, repel = TRUE)
 ```
 
-<img src="man/figures/README-kmeans-1.png" width="100%" />
-
-You can also explore the topics of various parts of the Tipitaka using
-packges like `wordcloud`:
-
-``` r
-library(wordcloud)
-library(dplyr)
-sati_sutta_long %>%
-  anti_join(pali_stop_words, by = "word") %>%
-  with(wordcloud(word, n, max.words = 40)) 
-```
-
-<img src="man/figures/README-wordclouds-1.png" width="100%" />
+<img src="man/figures/README-kmeans-1.png" alt="" width="100%" />
 
 Finally, we can look at word frequency by rank:
 
@@ -106,8 +97,8 @@ freq_by_rank <- tipitaka_long %>%
   add_count(wt = n, name = "word_total") %>%
   ungroup() %>%
   distinct(word, .keep_all = TRUE) %>%
-  mutate(tipitaka_total =  
-           sum(distinct(tipitaka_long, book, 
+  mutate(tipitaka_total =
+           sum(distinct(tipitaka_long, book,
                         .keep_all = TRUE)$total)) %>%
     transform(freq = word_total/tipitaka_total) %>%
   arrange(desc(freq)) %>%
@@ -121,4 +112,4 @@ freq_by_rank %>%
   scale_y_log10()
 ```
 
-<img src="man/figures/README-freq-by-word-1.png" width="100%" />
+<img src="man/figures/README-freq-by-word-1.png" alt="" width="100%" />

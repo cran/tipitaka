@@ -20,11 +20,8 @@ This has been implemented in C++ as the original R version
 was about 500x slower.
 }
 \examples{
-# Every unique word of of the Mahāsatipatthāna Sutta in
-# Pali alphabetical order:
-pali_sort(sati_sutta_long$word)
-
-# A sorted list of 100 random words from the Tiptaka:
-library(dplyr)
+\donttest{
+# A sorted list of 100 random words from the Tipitaka:
 pali_sort(sample(tipitaka_long$word, 100))
+}
 }
